@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import JobMap from '@/components/JobMap';
+import GoogleMap from '@/components/GoogleMap';
 import { useAuth } from '@/contexts/AuthContext';
 import { mockJobs, Job } from '@/data/mockJobs';
 import { 
@@ -235,7 +235,7 @@ const JobDetail = () => {
               </Card>
             </motion.div>
 
-            {/* Map */}
+            {/* Google Map */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -248,10 +248,12 @@ const JobDetail = () => {
                   </h3>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <JobMap 
-                    jobs={[job]}
-                    selectedJob={job}
+                  <GoogleMap
+                    lat={job.coords.lat}
+                    lng={job.coords.lng}
                     height="300px"
+                    title={job.title}
+                    company={job.company}
                   />
                 </CardContent>
               </Card>

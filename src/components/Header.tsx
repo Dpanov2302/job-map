@@ -2,11 +2,14 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, User, BriefcaseIcon } from 'lucide-react';
+import { useRole } from '@/contexts/RoleContext';
+import RoleSwitch from './RoleSwitch';
+import { LogOut, User, BriefcaseIcon, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const { role } = useRole();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -34,54 +37,64 @@ const Header = () => {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link 
-              to="/" 
-              className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
-            >
-              Главная
-            </Link>
-            <Link 
-              to="/jobs" 
-              className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
-            >
-              Вакансии
-            </Link>
-          </nav>
+          <div className="flex items-center space-x-6">
+            <nav className="hidden md:flex items-center space-x-6">
+              <Link 
+                to="/" 
+                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
+              >
+                Главная
+              </Link>
+              <Link 
+                to="/jobs" 
+                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
+              >
+                Вакансии
+              </Link>
+            </nav>
 
-          <div className="flex items-center space-x-3">
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                <Link to="/profile">
-                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                    <User className="w-4 h-4" />
-                    <span className="hidden sm:inline">{user?.name}</span>
+            {isAuthenticated && <RoleSwitch />}
+
+            <div className="flex items-center space-x-3">
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-3">
+                  {role === 'employer' && (
+                    <Button size="sm" className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                      <Plus className="w-4 h-4" />
+                      <span className="hidden sm:inline">Добавить вакансию</span>
+                    </Button>
+                  )}
+                  <Link to="/profile">
+                    <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                      <User className="w-4 h-4" />
+                      <span className="hidden sm:inline">{user?.name}</span>
+                    </Button>
+                  </Link>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 text-red-600 hover:text-red-700"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden sm:inline">Выйти</span>
                   </Button>
-                </Link>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleLogout}
-                  className="flex items-center space-x-2 text-red-600 hover:text-red-700"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="hidden sm:inline">Выйти</span>
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">
-                    Войти
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                    Регистрация
-                  </Button>
-                </Link>
-              </div>
-            )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm">
+                      Войти
+                    </Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                      Регистрация
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

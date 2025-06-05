@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
-import { User, Briefcase, Clock, Building, Eye } from 'lucide-react';
+import { useRole } from '@/contexts/RoleContext';
+import { User, Briefcase, Clock, Building, Eye, Plus, Users } from 'lucide-react';
 
 interface Application {
   id: string;
@@ -23,6 +24,7 @@ interface Application {
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth();
+  const { role } = useRole();
   const navigate = useNavigate();
   const [applications, setApplications] = useState<Application[]>([]);
 
@@ -67,6 +69,14 @@ const Profile = () => {
     }
   };
 
+  const getRoleText = () => {
+    return role === 'candidate' ? 'Соискатель' : 'Работодатель';
+  };
+
+  const getRoleColor = () => {
+    return role === 'candidate' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800';
+  };
+
   if (!isAuthenticated || !user) {
     return null;
   }
@@ -80,12 +90,23 @@ const Profile = () => {
           className="mb-8"
         >
           <div className="flex items-center space-x-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-              <User className="w-8 h-8 text-white" />
+            <div className={`w-16 h-16 rounded-xl flex items-center justify-center ${
+              role === 'candidate' 
+                ? 'bg-gradient-to-r from-blue-600 to-purple-600' 
+                : 'bg-gradient-to-r from-purple-600 to-pink-600'
+            }`}>
+              {role === 'candidate' ? (
+                <User className="w-8 h-8 text-white" />
+              ) : (
+                <Building className="w-8 h-8 text-white" />
+              )}
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
               <p className="text-gray-600">{user.email}</p>
+              <Badge className={`mt-2 ${getRoleColor()}`}>
+                {getRoleText()}
+              </Badge>
             </div>
           </div>
         </motion.div>
@@ -114,8 +135,10 @@ const Profile = () => {
                   <p className="text-gray-900">{user.email}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Статус</label>
-                  <Badge variant="secondary" className="block w-fit">Соискатель</Badge>
+                  <label className="text-sm font-medium text-gray-700">Роль</label>
+                  <Badge className={getRoleColor()}>
+                    {getRoleText()}
+                  </Badge>
                 </div>
                 <Button variant="outline" className="w-full">
                   Редактировать профиль
@@ -124,7 +147,7 @@ const Profile = () => {
             </Card>
           </motion.div>
 
-          {/* Applications */}
+          {/* Main Content */}
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -135,70 +158,102 @@ const Profile = () => {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                      <Briefcase className="w-5 h-5 mr-2" />
-                      Мои отклики ({applications.length})
+                      {role === 'candidate' ? (
+                        <>
+                          <Briefcase className="w-5 h-5 mr-2" />
+                          Мои отклики ({applications.length})
+                        </>
+                      ) : (
+                        <>
+                          <Users className="w-5 h-5 mr-2" />
+                          Мои вакансии (0)
+                        </>
+                      )}
                     </h2>
-                    <Link to="/jobs">
-                      <Button size="sm">Найти вакансии</Button>
-                    </Link>
+                    {role === 'candidate' ? (
+                      <Link to="/jobs">
+                        <Button size="sm">Найти вакансии</Button>
+                      </Link>
+                    ) : (
+                      <Button size="sm" className="flex items-center space-x-2">
+                        <Plus className="w-4 h-4" />
+                        <span>Добавить вакансию</span>
+                      </Button>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {applications.length === 0 ? (
+                  {role === 'candidate' ? (
+                    applications.length === 0 ? (
+                      <div className="text-center py-8">
+                        <div className="text-6xl mb-4">📝</div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          Пока нет откликов
+                        </h3>
+                        <p className="text-gray-600 mb-6">
+                          Найдите интересные вакансии и отправьте свой первый отклик
+                        </p>
+                        <Link to="/jobs">
+                          <Button>Найти вакансии</Button>
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {applications.map((application, index) => (
+                          <motion.div
+                            key={application.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+                          >
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <h3 className="font-semibold text-gray-900">
+                                  {application.jobTitle}
+                                </h3>
+                                <div className="flex items-center text-sm text-gray-600 mt-1">
+                                  <Building className="w-4 h-4 mr-1" />
+                                  {application.company}
+                                </div>
+                                <div className="flex items-center text-sm text-gray-500 mt-1">
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  {new Date(application.appliedAt).toLocaleDateString('ru-RU')}
+                                </div>
+                              </div>
+                              <Badge className={getStatusColor(application.status)}>
+                                {getStatusText(application.status)}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="text-sm text-gray-600">
+                                Резюме: {application.resumeFileName}
+                              </div>
+                              <Link to={`/jobs/${application.jobId}`}>
+                                <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                                  <Eye className="w-4 h-4" />
+                                  <span>Посмотреть вакансию</span>
+                                </Button>
+                              </Link>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    )
+                  ) : (
                     <div className="text-center py-8">
-                      <div className="text-6xl mb-4">📝</div>
+                      <div className="text-6xl mb-4">🏢</div>
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        Пока нет откликов
+                        Пока нет вакансий
                       </h3>
                       <p className="text-gray-600 mb-6">
-                        Найдите интересные вакансии и отправьте свой первый отклик
+                        Создайте свою первую вакансию и начните поиск сотрудников
                       </p>
-                      <Link to="/jobs">
-                        <Button>Найти вакансии</Button>
-                      </Link>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {applications.map((application, index) => (
-                        <motion.div
-                          key={application.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
-                        >
-                          <div className="flex items-start justify-between mb-3">
-                            <div>
-                              <h3 className="font-semibold text-gray-900">
-                                {application.jobTitle}
-                              </h3>
-                              <div className="flex items-center text-sm text-gray-600 mt-1">
-                                <Building className="w-4 h-4 mr-1" />
-                                {application.company}
-                              </div>
-                              <div className="flex items-center text-sm text-gray-500 mt-1">
-                                <Clock className="w-4 h-4 mr-1" />
-                                {new Date(application.appliedAt).toLocaleDateString('ru-RU')}
-                              </div>
-                            </div>
-                            <Badge className={getStatusColor(application.status)}>
-                              {getStatusText(application.status)}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-600">
-                              Резюме: {application.resumeFileName}
-                            </div>
-                            <Link to={`/jobs/${application.jobId}`}>
-                              <Button variant="ghost" size="sm" className="flex items-center space-x-1">
-                                <Eye className="w-4 h-4" />
-                                <span>Посмотреть вакансию</span>
-                              </Button>
-                            </Link>
-                          </div>
-                        </motion.div>
-                      ))}
+                      <Button className="flex items-center space-x-2">
+                        <Plus className="w-4 h-4" />
+                        <span>Добавить вакансию</span>
+                      </Button>
                     </div>
                   )}
                 </CardContent>
