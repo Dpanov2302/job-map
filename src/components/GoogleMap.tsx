@@ -16,14 +16,14 @@ declare global {
   }
 }
 
-const GoogleMap = ({ 
-  lat, 
-  lng, 
-  zoom = 15, 
-  height = '300px', 
-  title = 'Офис компании',
-  company = 'Компания'
-}: GoogleMapProps) => {
+const GoogleMap = ({
+                     lat,
+                     lng,
+                     zoom = 15,
+                     height = '300px',
+                     title = 'Офис компании',
+                     company = 'Компания'
+                   }: GoogleMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
 
@@ -90,11 +90,11 @@ const GoogleMap = ({
 
         // Create marker
         const marker = new YMapMarker(
-          {
-            coordinates: [lng, lat],
-            draggable: false
-          },
-          markerElement
+            {
+              coordinates: [lng, lat],
+              draggable: false
+            },
+            markerElement
         );
 
         mapInstanceRef.current.addChild(marker);
@@ -102,7 +102,7 @@ const GoogleMap = ({
         // Add click handler
         markerElement.addEventListener('click', () => {
           console.log(`Clicked on ${title} - ${company}`);
-          
+
           // Create a simple tooltip/popup effect
           const tooltip = document.createElement('div');
           tooltip.style.cssText = `
@@ -120,14 +120,14 @@ const GoogleMap = ({
             z-index: 1000;
             pointer-events: none;
           `;
-          
+
           tooltip.innerHTML = `
             <div style="font-weight: 600; color: #1f2937;">${title}</div>
             <div style="color: #6b7280;">${company}</div>
           `;
-          
+
           markerElement.appendChild(tooltip);
-          
+
           // Remove tooltip after 3 seconds
           setTimeout(() => {
             if (tooltip.parentNode) {
@@ -179,11 +179,11 @@ const GoogleMap = ({
   }, [lat, lng, zoom, title, company]);
 
   return (
-    <div 
-      ref={mapRef} 
-      style={{ height, width: '100%' }} 
-      className="rounded-lg overflow-hidden shadow-lg border border-gray-200"
-    />
+      <div
+          ref={mapRef}
+          style={{ height, width: '100%' }}
+          className="rounded-lg overflow-hidden shadow-lg border border-gray-200"
+      />
   );
 };
 

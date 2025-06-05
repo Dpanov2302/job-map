@@ -65,10 +65,12 @@ const Header = () => {
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 {role === 'employer' && (
-                  <Button size="sm" className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                    <Plus className="w-4 h-4" />
-                    <span className="hidden sm:inline">Добавить вакансию</span>
-                  </Button>
+                  <Link to="/create-job">
+                    <Button size="sm" className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                      <Plus className="w-4 h-4" />
+                      <span className="hidden sm:inline">Добавить вакансию</span>
+                    </Button>
+                  </Link>
                 )}
                 <Link to="/profile">
                   <Button variant="ghost" size="sm" className="flex items-center space-x-2">

@@ -45,7 +45,7 @@ export const mockJobs: Job[] = [
       'Спортивная компенсация'
     ],
     remote: true,
-    coords: { lat: 55.7558, lng: 37.6176 },
+    coords: { lat: 55.733974, lng: 37.587093 },
     companyLogo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiNGRkRCMDAiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMCIgeT0iMTAiPgo8cGF0aCBkPSJNMTAgMTBIMzBWMzBIMTBWMTBaIiBmaWxsPSIjRkYwMDAwIi8+Cjwvc3ZnPgo8L3N2Zz4K',
     postedDate: '2024-01-15',
     technologies: ['React', 'TypeScript', 'Redux', 'CSS3', 'Webpack']
@@ -74,7 +74,7 @@ export const mockJobs: Job[] = [
       'Возможность карьерного роста'
     ],
     remote: false,
-    coords: { lat: 59.9311, lng: 30.3609 },
+    coords: { lat: 59.933622, lng: 30.312967 },
     companyLogo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiM0Mzg1RjQiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMCIgeT0iMTAiPgo8cGF0aCBkPSJNOCAxNkgyNlYyNEg4VjE2WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo=',
     postedDate: '2024-01-14',
     technologies: ['Node.js', 'PostgreSQL', 'Docker', 'GraphQL', 'Redis']
@@ -132,7 +132,7 @@ export const mockJobs: Job[] = [
       'Офис класса А'
     ],
     remote: false,
-    coords: { lat: 55.7539, lng: 37.6208 },
+    coords: { lat: 55.748914, lng: 37.535475 },
     companyLogo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiMwMEE1NTEiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMCIgeT0iMTAiPgo8cGF0aCBkPSJNMTAgMTJIMzBWMjhIMTBWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+',
     postedDate: '2024-01-12',
     technologies: ['React Native', 'Redux', 'iOS', 'Android', 'JavaScript']
@@ -190,7 +190,7 @@ export const mockJobs: Job[] = [
       'Профессиональное развитие'
     ],
     remote: true,
-    coords: { lat: 55.7423, lng: 37.6618 },
+    coords: { lat: 55.691734, lng: 37.660557 },
     companyLogo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiNFNTAwNDUiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMCIgeT0iMTAiPgo8cGF0aCBkPSJNMTAgMTJIMzBWMjhIMTBWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+',
     postedDate: '2024-01-10',
     technologies: ['Python', 'Machine Learning', 'SQL', 'TensorFlow', 'Apache Spark']
@@ -277,7 +277,7 @@ export const mockJobs: Job[] = [
       'Комфортный офис'
     ],
     remote: false,
-    coords: { lat: 55.7587, lng: 37.6199 },
+    coords: { lat: 55.774102, lng: 37.576834 },
     companyLogo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMTIiIGZpbGw9IiNGRkRCMDAiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSIxMCIgeT0iMTAiPgo8cGF0aCBkPSJNMTAgMTJIMzBWMjhIMTBWMTJaIiBmaWxsPSIjMDAwMDAwIi8+Cjwvc3ZnPgo8L3N2Zz4K',
     postedDate: '2024-01-07',
     technologies: ['Kotlin', 'Android SDK', 'Material Design', 'RxJava', 'Dagger']

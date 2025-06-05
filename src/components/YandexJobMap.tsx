@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Job } from '@/data/mockJobs';
 
@@ -21,6 +21,8 @@ const YandexJobMap = ({ jobs, selectedJob, onJobSelect, height = '400px' }: Yand
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -31,10 +33,15 @@ const YandexJobMap = ({ jobs, selectedJob, onJobSelect, height = '400px' }: Yand
 
       if (!window.ymaps3) {
         console.log('Yandex Maps API not loaded');
+        setError('API Яндекс карт не загружено');
+        setIsLoading(false);
         return;
       }
 
       try {
+        setIsLoading(true);
+        setError(null);
+        
         await window.ymaps3.ready;
         console.log('Yandex Maps API ready');
 
@@ -205,9 +212,12 @@ const YandexJobMap = ({ jobs, selectedJob, onJobSelect, height = '400px' }: Yand
           });
         });
 
+        setIsLoading(false);
         console.log('Map initialized successfully with', jobs.length, 'job markers');
       } catch (error) {
         console.error('Error initializing map:', error);
+        setError('Ошибка инициализации карты');
+        setIsLoading(false);
       }
     };
 
@@ -216,22 +226,24 @@ const YandexJobMap = ({ jobs, selectedJob, onJobSelect, height = '400px' }: Yand
       initializeMap();
     } else {
       // Wait for API to load
+      let attempts = 0;
+      const maxAttempts = 50; // 5 seconds total
+      
       const checkInterval = setInterval(() => {
+        attempts++;
         if (window.ymaps3) {
           clearInterval(checkInterval);
           initializeMap();
+        } else if (attempts >= maxAttempts) {
+          clearInterval(checkInterval);
+          console.error('Yandex Maps API failed to load within 5 seconds');
+          setError('API Яндекс карт не удалось загрузить. Проверьте API ключ.');
+          setIsLoading(false);
         }
       }, 100);
 
-      // Cleanup interval after 10 seconds
-      const timeout = setTimeout(() => {
-        clearInterval(checkInterval);
-        console.error('Yandex Maps API failed to load within 10 seconds');
-      }, 10000);
-
       return () => {
         clearInterval(checkInterval);
-        clearTimeout(timeout);
       };
     }
 
@@ -247,6 +259,39 @@ const YandexJobMap = ({ jobs, selectedJob, onJobSelect, height = '400px' }: Yand
       markersRef.current = [];
     };
   }, [jobs, selectedJob, onJobSelect, navigate]);
+
+  if (isLoading) {
+    return (
+      <div 
+        style={{ height, width: '100%' }} 
+        className="rounded-lg overflow-hidden shadow-lg border border-gray-200 flex items-center justify-center bg-gray-50"
+      >
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          <p className="text-sm text-gray-600">Загрузка карты...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div 
+        style={{ height, width: '100%' }} 
+        className="rounded-lg overflow-hidden shadow-lg border border-gray-200 flex items-center justify-center bg-gray-50"
+      >
+        <div className="text-center p-4">
+          <div className="text-red-500 mb-2">
+            <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-600">{error}</p>
+          <p className="text-xs text-gray-500 mt-1">Убедитесь, что API ключ Яндекс карт настроен корректно</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

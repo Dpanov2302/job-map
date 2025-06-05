@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import GoogleMap from '@/components/GoogleMap';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockJobs, Job } from '@/data/mockJobs';
+import { jobsService } from '@/services/jobs';
+import { Job } from '@/data/mockJobs';
 import { 
   ArrowLeft, 
   MapPin, 
@@ -27,8 +28,9 @@ const JobDetail = () => {
   const [job, setJob] = useState<Job | null>(null);
 
   useEffect(() => {
-    const foundJob = mockJobs.find(j => j.id === id);
-    setJob(foundJob || null);
+    // Используем jobsService для получения вакансии по ID (включая созданные пользователем)
+    const foundJob = jobsService.getJobById(id!);
+    setJob(foundJob);
   }, [id]);
 
   const handleApply = () => {
@@ -55,7 +57,7 @@ const JobDetail = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="container mx-auto px-4 py-8">
-        {/* Back Button */}
+        {/* Кнопка "Назад" */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -70,9 +72,9 @@ const JobDetail = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
+          {/* Основной контент */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Header */}
+            {/* Заголовок */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -139,7 +141,7 @@ const JobDetail = () => {
               </Card>
             </motion.div>
 
-            {/* Description */}
+            {/* Описание */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -159,7 +161,7 @@ const JobDetail = () => {
               </Card>
             </motion.div>
 
-            {/* Requirements */}
+            {/* Требования */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -184,7 +186,7 @@ const JobDetail = () => {
               </Card>
             </motion.div>
 
-            {/* Benefits */}
+            {/* Преимущества */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -210,9 +212,9 @@ const JobDetail = () => {
             </motion.div>
           </div>
 
-          {/* Sidebar */}
+          {/* Боковая панель */}
           <div className="space-y-6">
-            {/* Apply Button */}
+            {/* Кнопка отклика */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -235,7 +237,7 @@ const JobDetail = () => {
               </Card>
             </motion.div>
 
-            {/* Google Map */}
+            {/* Карта Google */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -259,7 +261,7 @@ const JobDetail = () => {
               </Card>
             </motion.div>
 
-            {/* Company Info */}
+            {/* Информация о компании */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

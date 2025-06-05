@@ -6,24 +6,33 @@ import SearchFilters from '@/components/SearchFilters';
 import JobCard from '@/components/JobCard';
 import YandexJobMap from '@/components/YandexJobMap';
 import { Button } from '@/components/ui/button';
-import { mockJobs, Job } from '@/data/mockJobs';
+import { jobsService } from '@/services/jobs';
+import { Job } from '@/data/mockJobs';
 import { List, Map } from 'lucide-react';
 
 const Jobs = () => {
   const [searchParams] = useSearchParams();
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>(mockJobs);
+  const [allJobs, setAllJobs] = useState<Job[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
   const [selectedJob, setSelectedJob] = useState<Job | undefined>();
+
+  // Загружаем все вакансии при инициализации компонента
+  useEffect(() => {
+    const jobs = jobsService.getJobs();
+    setAllJobs(jobs);
+    setFilteredJobs(jobs);
+  }, []);
 
   useEffect(() => {
     const searchQuery = searchParams.get('search');
     if (searchQuery) {
       handleSearch(searchQuery);
     }
-  }, [searchParams]);
+  }, [searchParams, allJobs]);
 
   const handleSearch = (query: string) => {
-    const filtered = mockJobs.filter(job =>
+    const filtered = allJobs.filter(job =>
       job.title.toLowerCase().includes(query.toLowerCase()) ||
       job.company.toLowerCase().includes(query.toLowerCase()) ||
       job.description.toLowerCase().includes(query.toLowerCase()) ||
@@ -33,9 +42,9 @@ const Jobs = () => {
   };
 
   const handleFiltersChange = (filters: any) => {
-    let filtered = [...mockJobs];
+    let filtered = [...allJobs];
 
-    // Apply search query
+    // Применяем поисковый запрос
     if (filters.query) {
       filtered = filtered.filter(job =>
         job.title.toLowerCase().includes(filters.query.toLowerCase()) ||
@@ -45,7 +54,7 @@ const Jobs = () => {
       );
     }
 
-    // Apply location filter
+    // Применяем фильтр по местоположению
     if (filters.location && filters.location !== 'all') {
       const locationMap: { [key: string]: string } = {
         moscow: 'Москва',
@@ -59,7 +68,7 @@ const Jobs = () => {
       }
     }
 
-    // Apply experience filter
+    // Применяем фильтр по опыту
     if (filters.experience && filters.experience !== 'all') {
       filtered = filtered.filter(job => {
         const exp = job.experience.toLowerCase();
@@ -78,7 +87,7 @@ const Jobs = () => {
       });
     }
 
-    // Apply remote filter
+    // Применяем фильтр по удалённой работе
     if (filters.remote && filters.remote !== 'all') {
       switch (filters.remote) {
         case 'remote':
@@ -87,11 +96,11 @@ const Jobs = () => {
         case 'office':
           filtered = filtered.filter(job => job.remote === false);
           break;
-        // 'hybrid' would need additional data in mock
+        // 'hybrid' потребует дополнительных данных в моках
       }
     }
 
-    // Apply technology filter
+    // Применяем фильтр по технологиям
     if (filters.technologies && filters.technologies.length > 0) {
       filtered = filtered.filter(job =>
         filters.technologies.some((tech: string) =>
@@ -119,7 +128,7 @@ const Jobs = () => {
           </p>
         </motion.div>
 
-        {/* Search and Filters */}
+        {/* Поиск и фильтры */}
         <div className="mb-8">
           <SearchFilters 
             onSearch={handleSearch}
@@ -127,7 +136,7 @@ const Jobs = () => {
           />
         </div>
 
-        {/* View Mode Toggle */}
+        {/* Переключатель режима просмотра */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -156,7 +165,7 @@ const Jobs = () => {
           </div>
         </motion.div>
 
-        {/* Content */}
+        {/* Контент */}
         {viewMode === 'list' ? (
           <motion.div
             initial={{ opacity: 0 }}

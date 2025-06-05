@@ -1,21 +1,26 @@
 
-import { Job } from '@/data/mockJobs';
+import { Job, mockJobs } from '@/data/mockJobs';
 
 export const jobsService = {
-  // Получить все вакансии (из кэша или исходных данных)
+  // Получить все вакансии (моковые + добавленные пользователем)
   getJobs(): Job[] {
     try {
-      const cachedJobs = localStorage.getItem('jobsCache');
-      if (cachedJobs) {
-        return JSON.parse(cachedJobs);
-      }
-      
-      // Если кэша нет, загружаем из mockJobs и сохраняем в кэш
-      const { mockJobs } = require('@/data/mockJobs');
-      this.cacheJobs(mockJobs);
-      return mockJobs;
+      // Берём моковые вакансии из прямого импорта
+      // (раньше это делалось через require, что могло проваливаться в сборке)
+      const baseJobs: Job[] = mockJobs;
+
+      // Читаем пользовательские вакансии из localStorage
+      const myJobs = this.getMyJobs();
+
+      // Объединяем два массива: моковые + пользовательские
+      const allJobs = [...baseJobs, ...myJobs];
+
+      // Перезаписываем кэшовую копию объединённого списка
+      this.cacheJobs(allJobs);
+
+      return allJobs;
     } catch (error) {
-      console.error('Error reading jobs:', error);
+      console.error('Ошибка чтения вакансий:', error);
       return [];
     }
   },
@@ -31,7 +36,7 @@ export const jobsService = {
       const myJobs = localStorage.getItem('myJobs');
       return myJobs ? JSON.parse(myJobs) : [];
     } catch (error) {
-      console.error('Error reading my jobs:', error);
+      console.error('Ошибка чтения моих вакансий:', error);
       return [];
     }
   },
@@ -41,54 +46,48 @@ export const jobsService = {
     const myJobs = this.getMyJobs();
     const newJob: Job = {
       ...job,
-      id: Date.now().toString()
+      id: Date.now().toString(),
     };
 
+    // Сохраняем новую вакансию в разделе "мои вакансии"
     myJobs.push(newJob);
     localStorage.setItem('myJobs', JSON.stringify(myJobs));
 
-    // Также добавляем в общий кэш вакансий
-    const allJobs = this.getJobs();
-    allJobs.push(newJob);
-    this.cacheJobs(allJobs);
+    // Обновляем общий кэш: пересобираем mockJobs + myJobs
+    this.getJobs();
 
     return newJob;
   },
 
   // Обновить вакансию
   updateJob(jobId: string, updates: Partial<Job>): void {
+    // Обновляем в "мои вакансии"
     const myJobs = this.getMyJobs();
-    const jobIndex = myJobs.findIndex(job => job.id === jobId);
-    
+    const jobIndex = myJobs.findIndex((job) => job.id === jobId);
     if (jobIndex !== -1) {
       myJobs[jobIndex] = { ...myJobs[jobIndex], ...updates };
       localStorage.setItem('myJobs', JSON.stringify(myJobs));
-
-      // Обновляем в общем кэше
-      const allJobs = this.getJobs();
-      const allJobIndex = allJobs.findIndex(job => job.id === jobId);
-      if (allJobIndex !== -1) {
-        allJobs[allJobIndex] = { ...allJobs[allJobIndex], ...updates };
-        this.cacheJobs(allJobs);
-      }
     }
+
+    // Обновляем общий кэш: пересобираем mockJobs + myJobs
+    this.getJobs();
   },
 
   // Удалить вакансию
   removeJob(jobId: string): void {
+    // Удаляем из "мои вакансии"
     const myJobs = this.getMyJobs();
-    const filteredJobs = myJobs.filter(job => job.id !== jobId);
-    localStorage.setItem('myJobs', JSON.stringify(filteredJobs));
+    const filteredMyJobs = myJobs.filter((job) => job.id !== jobId);
+    localStorage.setItem('myJobs', JSON.stringify(filteredMyJobs));
 
-    // Удаляем из общего кэша
-    const allJobs = this.getJobs();
-    const filteredAllJobs = allJobs.filter(job => job.id !== jobId);
-    this.cacheJobs(filteredAllJobs);
+    // Обновляем общий кэш: пересобираем mockJobs + оставшиеся myJobs
+    this.getJobs();
   },
 
   // Найти вакансию по ID
   getJobById(jobId: string): Job | null {
+    // Берём уже объединённый список из getJobs()
     const allJobs = this.getJobs();
-    return allJobs.find(job => job.id === jobId) || null;
-  }
+    return allJobs.find((job) => job.id === jobId) || null;
+  },
 };
