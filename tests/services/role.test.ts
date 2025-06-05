@@ -1,3 +1,4 @@
+// @ts-ignore
 import { test, expect, beforeEach } from 'bun:test';
 import '../../tests/setup';
 import { roleService } from '@/services/role';
