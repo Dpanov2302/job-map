@@ -1,7 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-export type UserRole = 'candidate' | 'employer';
+import { roleService, UserRole } from '@/services/role';
 
 interface RoleContextType {
   role: UserRole;
@@ -23,15 +22,14 @@ export const RoleProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [role, setRole] = useState<UserRole>('candidate');
 
   useEffect(() => {
-    const savedRole = localStorage.getItem('user_role') as UserRole;
-    if (savedRole && (savedRole === 'candidate' || savedRole === 'employer')) {
-      setRole(savedRole);
-    }
+    // Загружаем роль из localStorage при старте
+    const savedRole = roleService.getRole();
+    setRole(savedRole);
   }, []);
 
   const handleSetRole = (newRole: UserRole) => {
     setRole(newRole);
-    localStorage.setItem('user_role', newRole);
+    roleService.setRole(newRole);
   };
 
   const toggleRole = () => {

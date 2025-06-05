@@ -1,11 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
+import { authService, User } from '@/services/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -29,44 +24,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    const userData = localStorage.getItem('user_data');
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+    // Загружаем данные авторизации из localStorage при старте
+    const authData = authService.getAuthData();
+    if (authData) {
+      setUser(authData.user);
     }
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock login
-    const mockUser = {
-      id: '1',
-      email,
-      name: email.split('@')[0],
-    };
-    
-    localStorage.setItem('auth_token', 'mock_token_' + Date.now());
-    localStorage.setItem('user_data', JSON.stringify(mockUser));
-    setUser(mockUser);
-    return true;
+    try {
+      // Эмуляция логина - принимаем любой email и пароль
+      const userData = authService.setAuthData(email, password);
+      setUser(userData);
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
   };
 
   const register = async (email: string, password: string, name: string): Promise<boolean> => {
-    // Mock registration
-    const mockUser = {
-      id: Date.now().toString(),
-      email,
-      name,
-    };
-    
-    localStorage.setItem('auth_token', 'mock_token_' + Date.now());
-    localStorage.setItem('user_data', JSON.stringify(mockUser));
-    setUser(mockUser);
-    return true;
+    try {
+      // Эмуляция регистрации
+      const userData = authService.setAuthData(email, password, name);
+      setUser(userData);
+      return true;
+    } catch (error) {
+      console.error('Registration error:', error);
+      return false;
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_data');
+    authService.clearAuthData();
     setUser(null);
   };
 
