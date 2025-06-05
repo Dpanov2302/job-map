@@ -28,6 +28,10 @@ const JobCard = ({ job, index }: JobCardProps) => {
                 src={job.companyLogo} 
                 alt={job.company}
                 className="w-12 h-12 rounded-lg object-cover bg-gray-100"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/api/placeholder/60/60';
+                }}
               />
               <div>
                 <h3 className="font-semibold text-lg text-gray-900 leading-tight">

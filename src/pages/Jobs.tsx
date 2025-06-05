@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SearchFilters from '@/components/SearchFilters';
 import JobCard from '@/components/JobCard';
-import JobMap from '@/components/JobMap';
+import YandexJobMap from '@/components/YandexJobMap';
 import { Button } from '@/components/ui/button';
 import { mockJobs, Job } from '@/data/mockJobs';
 import { List, Map } from 'lucide-react';
@@ -112,10 +112,10 @@ const Jobs = () => {
           className="mb-8"
         >
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            IT Вакансии
+            JobMap - IT Вакансии на карте
           </h1>
           <p className="text-gray-600 text-lg">
-            Найдено {filteredJobs.length} вакансий
+            Найдено {filteredJobs.length} вакансий с офисами на карте
           </p>
         </motion.div>
 
@@ -151,7 +151,7 @@ const Jobs = () => {
               className="flex items-center space-x-2"
             >
               <Map className="w-4 h-4" />
-              <span>Карта</span>
+              <span>Карта офисов</span>
             </Button>
           </div>
         </motion.div>
@@ -186,15 +186,25 @@ const Jobs = () => {
                     }`}
                     onClick={() => setSelectedJob(job)}
                   >
-                    <h4 className="font-medium">{job.title}</h4>
-                    <p className="text-sm text-gray-600">{job.company}</p>
+                    <div className="flex items-center space-x-3 mb-2">
+                      <img 
+                        src={job.companyLogo} 
+                        alt={job.company}
+                        className="w-8 h-8 rounded object-cover"
+                      />
+                      <div>
+                        <h4 className="font-medium">{job.title}</h4>
+                        <p className="text-sm text-gray-600">{job.company}</p>
+                      </div>
+                    </div>
                     <p className="text-sm text-gray-500">{job.location}</p>
+                    <p className="text-sm text-green-600 font-medium">{job.salary}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div>
-              <JobMap 
+              <YandexJobMap 
                 jobs={filteredJobs}
                 selectedJob={selectedJob}
                 onJobSelect={setSelectedJob}

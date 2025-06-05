@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import RoleSwitch from './RoleSwitch';
-import { LogOut, User, BriefcaseIcon, Plus } from 'lucide-react';
+import { LogOut, User, MapPin, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Header = () => {
@@ -24,20 +24,21 @@ const Header = () => {
       className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50"
     >
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2 group">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center"
-            >
-              <BriefcaseIcon className="w-5 h-5 text-white" />
-            </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              IT Jobs
-            </span>
-          </Link>
+        <div className="grid grid-cols-3 items-center">
+          {/* Левая часть - Логотип и навигация */}
+          <div className="flex items-center space-x-8">
+            <Link to="/" className="flex items-center space-x-2 group">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center"
+              >
+                <MapPin className="w-5 h-5 text-white" />
+              </motion.div>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                JobMap
+              </span>
+            </Link>
 
-          <div className="flex items-center space-x-6">
             <nav className="hidden md:flex items-center space-x-6">
               <Link 
                 to="/" 
@@ -52,49 +53,53 @@ const Header = () => {
                 Вакансии
               </Link>
             </nav>
+          </div>
 
+          {/* Центральная часть - RoleSwitch */}
+          <div className="flex justify-center">
             {isAuthenticated && <RoleSwitch />}
+          </div>
 
-            <div className="flex items-center space-x-3">
-              {isAuthenticated ? (
-                <div className="flex items-center space-x-3">
-                  {role === 'employer' && (
-                    <Button size="sm" className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                      <Plus className="w-4 h-4" />
-                      <span className="hidden sm:inline">Добавить вакансию</span>
-                    </Button>
-                  )}
-                  <Link to="/profile">
-                    <Button variant="ghost" size="sm" className="flex items-center space-x-2">
-                      <User className="w-4 h-4" />
-                      <span className="hidden sm:inline">{user?.name}</span>
-                    </Button>
-                  </Link>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleLogout}
-                    className="flex items-center space-x-2 text-red-600 hover:text-red-700"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="hidden sm:inline">Выйти</span>
+          {/* Правая часть - Действия и профиль */}
+          <div className="flex items-center justify-end space-x-3">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-3">
+                {role === 'employer' && (
+                  <Button size="sm" className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden sm:inline">Добавить вакансию</span>
                   </Button>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <Link to="/login">
-                    <Button variant="ghost" size="sm">
-                      Войти
-                    </Button>
-                  </Link>
-                  <Link to="/register">
-                    <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                      Регистрация
-                    </Button>
-                  </Link>
-                </div>
-              )}
-            </div>
+                )}
+                <Link to="/profile">
+                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">{user?.name}</span>
+                  </Button>
+                </Link>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 text-red-600 hover:text-red-700"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">Выйти</span>
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">
+                    Войти
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                    Регистрация
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
