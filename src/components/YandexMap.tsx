@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from 'react';
 
-interface GoogleMapProps {
+interface YandexMapProps {
   lat: number;
   lng: number;
   zoom?: number;
@@ -16,14 +16,14 @@ declare global {
   }
 }
 
-const GoogleMap = ({
+const YandexMap = ({
                      lat,
                      lng,
                      zoom = 15,
                      height = '300px',
                      title = 'Офис компании',
                      company = 'Компания'
-                   }: GoogleMapProps) => {
+                   }: YandexMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
 
@@ -187,4 +187,4 @@ const GoogleMap = ({
   );
 };
 
-export default GoogleMap;
+export default YandexMap;

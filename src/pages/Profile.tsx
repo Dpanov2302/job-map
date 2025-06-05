@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
-import { User, Briefcase, Clock, Building, Eye, Plus, Users } from 'lucide-react';
+import { jobsService } from '@/services/jobs';
+import { User, Briefcase, Clock, Building, Eye, Plus, Users, MapPin, DollarSign } from 'lucide-react';
 
 interface Application {
   id: string;
@@ -27,6 +28,7 @@ const Profile = () => {
   const { role } = useRole();
   const navigate = useNavigate();
   const [applications, setApplications] = useState<Application[]>([]);
+  const [myJobs, setMyJobs] = useState<any[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -34,10 +36,16 @@ const Profile = () => {
       return;
     }
 
-    // Load applications from localStorage
-    const savedApplications = JSON.parse(localStorage.getItem('job_applications') || '[]');
-    setApplications(savedApplications);
-  }, [isAuthenticated, navigate]);
+    if (role === 'candidate') {
+      // Load applications from localStorageAdd commentMore actions
+      const savedApplications = JSON.parse(localStorage.getItem('job_applications') || '[]');
+      setApplications(savedApplications);
+    } else if (role === 'employer') {
+      // Load employer's jobs
+      const employerJobs = jobsService.getMyJobs();
+      setMyJobs(employerJobs);
+    }
+  }, [isAuthenticated, navigate, role]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -166,7 +174,7 @@ const Profile = () => {
                       ) : (
                         <>
                           <Users className="w-5 h-5 mr-2" />
-                          Мои вакансии (0)
+                          Мои вакансии ({myJobs.length})
                         </>
                       )}
                     </h2>
@@ -175,10 +183,12 @@ const Profile = () => {
                         <Button size="sm">Найти вакансии</Button>
                       </Link>
                     ) : (
-                      <Button size="sm" className="flex items-center space-x-2">
-                        <Plus className="w-4 h-4" />
-                        <span>Добавить вакансию</span>
-                      </Button>
+                      <Link to="/create-job">
+                        <Button size="sm" className="flex items-center space-x-2">
+                          <Plus className="w-4 h-4" />
+                          <span>Добавить вакансию</span>
+                        </Button>
+                      </Link>
                     )}
                   </div>
                 </CardHeader>
@@ -225,7 +235,7 @@ const Profile = () => {
                                 {getStatusText(application.status)}
                               </Badge>
                             </div>
-                            
+
                             <div className="flex items-center justify-between">
                               <div className="text-sm text-gray-600">
                                 Резюме: {application.resumeFileName}
@@ -242,19 +252,74 @@ const Profile = () => {
                       </div>
                     )
                   ) : (
-                    <div className="text-center py-8">
-                      <div className="text-6xl mb-4">🏢</div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                        Пока нет вакансий
-                      </h3>
-                      <p className="text-gray-600 mb-6">
-                        Создайте свою первую вакансию и начните поиск сотрудников
-                      </p>
-                      <Button className="flex items-center space-x-2">
-                        <Plus className="w-4 h-4" />
-                        <span>Добавить вакансию</span>
-                      </Button>
-                    </div>
+                      myJobs.length === 0 ? (
+                          <div className="text-center py-8">Add commentMore actions
+                            <div className="text-6xl mb-4">🏢</div>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                              Пока нет вакансий
+                            </h3>
+                            <p className="text-gray-600 mb-6">
+                              Создайте свою первую вакансию и начните поиск сотрудников
+                            </p>
+                            <Link to="/create-job">
+                              <Button className="flex items-center space-x-2">
+                                <Plus className="w-4 h-4" />
+                                <span>Добавить вакансию</span>
+                              </Button>
+                            </Link>
+                          </div>
+                      ) : (
+                          <div className="space-y-4">
+                            {myJobs.map((job, index) => (
+                                <motion.div
+                                    key={job.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+                                >
+                                  <div className="flex items-start justify-between mb-3">
+                                    <div>
+                                      <h3 className="font-semibold text-gray-900">
+                                        {job.title}
+                                      </h3>
+                                      <div className="flex items-center text-sm text-gray-600 mt-1">
+                                        <Building className="w-4 h-4 mr-1" />
+                                        {job.company}
+                                      </div>
+                                      <div className="flex items-center text-sm text-gray-600 mt-1">
+                                        <MapPin className="w-4 h-4 mr-1" />
+                                        {job.location}
+                                      </div>
+                                      <div className="flex items-center text-sm text-gray-600 mt-1">
+                                        <DollarSign className="w-4 h-4 mr-1" />
+                                        {job.salary}
+                                      </div>
+                                      <div className="flex items-center text-sm text-gray-500 mt-1">
+                                        <Clock className="w-4 h-4 mr-1" />
+                                        Опубликовано: {new Date(job.postedDate).toLocaleDateString('ru-RU')}
+                                      </div>
+                                    </div>
+                                    <Badge className="bg-green-100 text-green-800">
+                                      Активна
+                                    </Badge>
+                                  </div>
+
+                                  <div className="flex items-center justify-between">
+                                    <div className="text-sm text-gray-600">
+                                      Тип: {job.type} • Опыт: {job.experience}
+                                    </div>
+                                    <Link to={`/jobs/${job.id}`}>
+                                      <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                                        <Eye className="w-4 h-4" />
+                                        <span>Посмотреть</span>
+                                      </Button>
+                                    </Link>
+                                  </div>
+                                </motion.div>
+                            ))}
+                          </div>
+                      )
                   )}
                 </CardContent>
               </Card>

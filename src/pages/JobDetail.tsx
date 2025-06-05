@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import GoogleMap from '@/components/GoogleMap';
+import YandexMap from '@/components/YandexMap.tsx';
 import { useAuth } from '@/contexts/AuthContext';
 import { jobsService } from '@/services/jobs';
 import { Job } from '@/data/mockJobs';
@@ -250,7 +250,7 @@ const JobDetail = () => {
                   </h3>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <GoogleMap
+                  <YandexMap
                     lat={job.coords.lat}
                     lng={job.coords.lng}
                     height="300px"
