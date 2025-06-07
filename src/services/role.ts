@@ -1,4 +1,3 @@
-
 export type UserRole = 'candidate' | 'employer';
 
 export const roleService = {

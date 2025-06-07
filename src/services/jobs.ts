@@ -5,17 +5,9 @@ export const jobsService = {
   // Получить все вакансии (моковые + добавленные пользователем)
   getJobs(): Job[] {
     try {
-      // Берём моковые вакансии из прямого импорта
-      // (раньше это делалось через require, что могло проваливаться в сборке)
       const baseJobs: Job[] = mockJobs;
-
-      // Читаем пользовательские вакансии из localStorage
       const myJobs = this.getMyJobs();
-
-      // Объединяем два массива: моковые + пользовательские
       const allJobs = [...baseJobs, ...myJobs];
-
-      // Перезаписываем кэшовую копию объединённого списка
       this.cacheJobs(allJobs);
 
       return allJobs;
